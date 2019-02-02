@@ -1,7 +1,7 @@
 import measurements.Wind;
 import org.junit.Assert;
 import org.junit.Test;
-import units.VelocityUnits;
+import measurements.units.VelocityUnits;
 
 //TODO: need to have a test in the scraper part to ensure that we can set data from createWeatherData.
 public class testWindSettersAccess {

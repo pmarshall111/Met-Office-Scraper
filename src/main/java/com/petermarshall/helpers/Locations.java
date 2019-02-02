@@ -1,4 +1,4 @@
-package helpers;
+package com.petermarshall.helpers;
 
 public enum Locations {
     CHALFONT_ST_PETER("gcpte6m6w", "Chalfont St. Peter"),

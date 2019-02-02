@@ -1,9 +1,9 @@
-package api;
+package com.petermarshall;
 
 import measurements.Wind;
-import units.Conditions;
-import units.TempUnits;
-import units.VelocityUnits;
+import measurements.Conditions;
+import measurements.units.TempUnits;
+import measurements.units.VelocityUnits;
 import measurements.Temperature;
 
 import java.time.LocalTime;
@@ -22,7 +22,7 @@ public class HourlyWeather {
     //sunrise
     //sunset
 
-    //also will need to store the units these values are measured in.
+    //also will need to store the measurements.units these values are measured in.
 
     private final LocalTime time;
 

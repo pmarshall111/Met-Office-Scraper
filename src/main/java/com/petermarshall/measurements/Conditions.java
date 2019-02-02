@@ -1,4 +1,4 @@
-package units;
+package measurements;
 
 //created condition class so we can later add svgs or small jpgs later to display on our app.
 public enum Conditions {

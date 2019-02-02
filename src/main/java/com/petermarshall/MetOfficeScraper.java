@@ -1,9 +1,9 @@
-package api;
+package com.petermarshall;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
-import helpers.Locations;
-import helpers.MetOfficeUrl;
+import com.petermarshall.helpers.Locations;
+import com.petermarshall.helpers.MetOfficeUrl;
 
 public class MetOfficeScraper {
 

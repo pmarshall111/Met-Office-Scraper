@@ -1,6 +1,6 @@
 package measurements;
 
-import units.TempUnits;
+import measurements.units.TempUnits;
 
 public class Temperature {
     private double value;

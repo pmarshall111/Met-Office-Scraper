@@ -1,4 +1,4 @@
-package units;
+package measurements;
 
 public enum UV {
     LOW("You can safely stay outside",                    new int[]{0,1,2},  new int[]{}),

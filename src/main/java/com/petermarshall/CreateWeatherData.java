@@ -1,4 +1,4 @@
-package api;
+package com.petermarshall;
 
 import com.gargoylesoftware.htmlunit.html.DomElement;
 import com.gargoylesoftware.htmlunit.html.DomNode;
@@ -7,9 +7,9 @@ import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import measurements.Temperature;
 import measurements.Wind;
 import org.w3c.dom.NamedNodeMap;
-import units.Conditions;
-import units.TempUnits;
-import units.VelocityUnits;
+import measurements.Conditions;
+import measurements.units.TempUnits;
+import measurements.units.VelocityUnits;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -125,7 +125,7 @@ public class CreateWeatherData {
 //                int vis = Integer.parseInt(visibilityStr);
 //
 //                Visibility visibility = new Visibility(vis, visUnits);
-//                HourlyWeather weather = hourlyData.get(idx);
+//                com.petermarshall.HourlyWeather weather = hourlyData.get(idx);
 //                weather.setVisibility(visibility);
 //            }
 //
@@ -137,7 +137,7 @@ public class CreateWeatherData {
 //                String withoutPSign = percent.substring(startIndex, percent.length()-1);
 //                double probability = Double.parseDouble(withoutPSign)/100;
 //
-//                HourlyWeather weather = hourlyData.get(idx);
+//                com.petermarshall.HourlyWeather weather = hourlyData.get(idx);
 //                weather.setHumidity(probability);
 //            }
 

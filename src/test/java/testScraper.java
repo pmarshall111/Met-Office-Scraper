@@ -1,8 +1,8 @@
-import api.DailyWeather;
-import api.HourlyWeather;
-import api.MetOfficeScraper;
+import com.petermarshall.DailyWeather;
+import com.petermarshall.HourlyWeather;
+import com.petermarshall.MetOfficeScraper;
 import helpers.Locations;
-import units.Conditions;
+import measurements.Conditions;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import org.junit.Assert;
 import org.junit.Before;
@@ -92,8 +92,8 @@ public class testScraper {
 
 //    @Test
 //    public void testHourlyDataContainsTemperature() {
-//        for (DailyWeather dailyWeather: forecast) {
-//            for (HourlyWeather hourlyWeather : dailyWeather.getHourlyWeather()) {
+//        for (com.petermarshall.DailyWeather dailyWeather: forecast) {
+//            for (com.petermarshall.HourlyWeather hourlyWeather : dailyWeather.getHourlyWeather()) {
 //                try {
 //                    double temp = hourlyWeather.getTempInCelsius();
 //                } catch (NullPointerException e) {
@@ -115,7 +115,7 @@ public class testScraper {
     //    @Test
 //    public void testCanGetOverallOutlookToday() {
 //        //TODO: will require sunrise & sunset times so we can filter out the night and get the mode outlook.
-//        DailyWeather today = forecast[0];
+//        com.petermarshall.DailyWeather today = forecast[0];
 //        today.
 //    }
 

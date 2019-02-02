@@ -1,4 +1,4 @@
-package units;
+package measurements.units;
 
 public enum VelocityUnits {
     NO_UNIT("N/A"),

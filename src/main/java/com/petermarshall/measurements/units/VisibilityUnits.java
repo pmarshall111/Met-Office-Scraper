@@ -1,4 +1,4 @@
-package units;
+package measurements.units;
 
 public enum VisibilityUnits {
     UNKNOWN("u", new int[]{-1,-1}),

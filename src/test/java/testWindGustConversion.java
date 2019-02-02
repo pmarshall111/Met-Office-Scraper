@@ -1,5 +1,5 @@
 import measurements.Wind;
-import units.VelocityUnits;
+import measurements.units.VelocityUnits;
 import org.junit.Assert;
 import org.junit.Test;
 

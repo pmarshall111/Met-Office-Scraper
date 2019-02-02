@@ -1,6 +1,4 @@
-package api;//basically aiming to create an all round universal met office scraper.
-
-//no pollen data right now. It said that was due to come out in march time.
+package com.petermarshall;//no pollen data right now. It said that was due to come out in march time.
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -25,7 +23,7 @@ public class DailyWeather {
         return hourlyData.size();
     }
 
-//    public units.Conditions getAvgConditionToday() {
+//    public measurements.Conditions getAvgConditionToday() {
 //        //only look during the daytime.
 //
 //        //will need sunset data to filter out weather patterns outside of this.

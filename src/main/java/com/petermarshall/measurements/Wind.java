@@ -1,12 +1,12 @@
 package measurements;
 
-import api.CreateWeatherData;
-import units.VelocityUnits;
+import com.petermarshall.CreateWeatherData;
+import measurements.units.VelocityUnits;
 
 import java.util.ArrayList;
 
 //NOTE: would normally be put into measurements package, but Java does not allow access from above into sub-packages,
-// so the options are either keeping it in the same package as CreateWeatherData, or making our setters public, which obviously isn't an option.
+// so the options are either keeping it in the same package as com.petermarshall.CreateWeatherData, or making our setters public, which obviously isn't an option.
 
 public class Wind {
     private String direction;
@@ -46,10 +46,10 @@ public class Wind {
     }
 
     /*
-     * Used to allow us to put the class in measurements sub-package whilst still allowing CreateWeatherData to use the setters, but also
+     * Used to allow us to put the class in measurements sub-package whilst still allowing com.petermarshall.CreateWeatherData to use the setters, but also
      * prohibiting access from anywhere else in the program.
      */
-    boolean accessAllowed() {
+    private boolean accessAllowed() {
         ArrayList<String> ALLOWED_CLASSES = new ArrayList<String>(){{
             add(CreateWeatherData.class.getName());
             }};

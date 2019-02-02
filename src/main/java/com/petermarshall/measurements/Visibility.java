@@ -1,6 +1,6 @@
 package measurements;
 
-import units.VisibilityUnits;
+import measurements.units.VisibilityUnits;
 
 public class Visibility {
     private double val;
