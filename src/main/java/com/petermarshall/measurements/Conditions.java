@@ -1,4 +1,4 @@
-package measurements;
+package com.petermarshall.measurements;
 
 //created condition class so we can later add svgs or small jpgs later to display on our app.
 public enum Conditions {
@@ -11,12 +11,12 @@ public enum Conditions {
     CLEAR_NIGHT("Clear night"),
     MIST("Mist"),
     FOG("Fog"),
-    LIGHT_RAIN_SHOWER_NIGHT("Light rain shower night"),
-    LIGHT_RAIN_SHOWER("Light rain shower day"),
+    LIGHT_RAIN_SHOWER_NIGHT("Light shower night"),
+    LIGHT_RAIN_SHOWER("Light shower day"),
     LIGHT_RAIN("Light rain"),
     DRIZZLE("Drizzle"),
-    HEAVY_RAIN_SHOWER_NIGHT("Heavy rain shower night"),
-    HEAVY_RAIN_SHOWER("Heavy rain shower day"), //different between heavy rain shower and heavy rain appears to be that shower is over quickly so has a sun coming from behind the cloud.,
+    HEAVY_RAIN_SHOWER_NIGHT("Heavy shower night"),
+    HEAVY_RAIN_SHOWER("Heavy shower day"), //different between heavy rain shower and heavy rain appears to be that shower is over quickly so has a sun coming from behind the cloud.,
     HEAVY_RAIN("Heavy rain"),
     SLEET_SHOWER_NIGHT("Sleet shower night"),
     SLEET_SHOWER_DAY("Sleet shower day"),
@@ -35,9 +35,6 @@ public enum Conditions {
     THUNDER("Thunder"),
     DUST("Dust"),
     TROPICAL_STORM("Tropical storm");
-
-
-    //TODO move over the rest of these whilst eating https://www.metoffice.gov.uk/guide/weather/symbols
 
     public final String descriptor;
 

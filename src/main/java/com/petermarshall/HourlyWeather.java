@@ -1,12 +1,11 @@
 package com.petermarshall;
 
-import measurements.Wind;
-import measurements.Conditions;
-import measurements.units.TempUnits;
-import measurements.units.VelocityUnits;
-import measurements.Temperature;
+import com.petermarshall.measurements.*;
+import com.petermarshall.measurements.units.TempUnits;
+import com.petermarshall.measurements.units.VelocityUnits;
 
 import java.time.LocalTime;
+import java.util.HashSet;
 
 public class HourlyWeather {
     //chance of rain
@@ -31,6 +30,9 @@ public class HourlyWeather {
     private Temperature temp;
     private Temperature feelsLikeTemp;
     private Wind wind;
+    private Visibility visibility;
+    private double humidity;
+    private UV uv;
 
     public HourlyWeather(LocalTime time) {
         this.time = time;
@@ -55,6 +57,16 @@ public class HourlyWeather {
     void setWind(Wind wind) {
         this.wind = wind;
     }
+
+    void setVisibility(Visibility visibility) {
+        this.visibility = visibility;
+    }
+
+    void setHumidity(double humidity) {
+        this.humidity = humidity;
+    }
+
+    void setUv(UV uv) {this.uv = uv;}
 
     public LocalTime getTime() {
         return time;
@@ -87,4 +99,16 @@ public class HourlyWeather {
     public double getWindGust(VelocityUnits units) {
         return wind.getGust(units);
     }
+
+    public String getVisibilityRangeString() {return visibility.getRange();}
+
+    public double getVisibilityScore() {return visibility.getScore();}
+
+    public double getHumidity() {return humidity;}
+
+    public int getUvScore() {return uv.getUvScore();}
+
+    public String getUvRecommendation() {return uv.getRecommendation();}
+
+    public HashSet<LocalTime> getTimesToStayOutTheSun() {return uv.getTimesToStayOutTheSun();}
 }

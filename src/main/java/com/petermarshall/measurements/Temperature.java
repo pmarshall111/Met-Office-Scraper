@@ -1,6 +1,6 @@
-package measurements;
+package com.petermarshall.measurements;
 
-import measurements.units.TempUnits;
+import com.petermarshall.measurements.units.TempUnits;
 
 public class Temperature {
     private double value;
@@ -11,11 +11,11 @@ public class Temperature {
         this.units = units;
     }
 
-    public double getTemp(TempUnits units) {
-        if (units.equals(this.units)) {
+    public double getTemp(TempUnits desiredUnits) {
+        if (desiredUnits.equals(this.units)) {
             return this.value;
         } else {
-            return TempUnits.convert(this.value, this.units, TempUnits.CELSIUS);
+            return TempUnits.convert(this.value, this.units, desiredUnits);
         }
     }
 }

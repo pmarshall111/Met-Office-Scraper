@@ -1,4 +1,4 @@
-package measurements.units;
+package com.petermarshall.measurements.units;
 
 public enum VelocityUnits {
     NO_UNIT("N/A"),
@@ -35,6 +35,10 @@ public enum VelocityUnits {
         }
 
         return -9999999;
+    }
+
+    public static void main(String[] args) {
+        System.out.println(convert(5, VelocityUnits.MPH, VelocityUnits.KPH));
     }
 
     private static double milesToKm(double miles) {

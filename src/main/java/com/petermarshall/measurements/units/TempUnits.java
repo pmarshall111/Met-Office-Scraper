@@ -1,4 +1,4 @@
-package measurements.units;
+package com.petermarshall.measurements.units;
 
 public enum TempUnits {
     NO_UNIT(" "),

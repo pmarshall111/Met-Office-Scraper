@@ -1,17 +1,21 @@
-package measurements;
+package com.petermarshall.measurements;
 
-import measurements.units.VisibilityUnits;
+import com.petermarshall.measurements.info.VisibilityInfo;
 
 public class Visibility {
-    private double val;
-    private VisibilityUnits units;
+    private double score;
+    private VisibilityInfo units;
 
-    public Visibility(double val, VisibilityUnits units) {
-        this.val = val;
+    public Visibility(double score, VisibilityInfo units) {
+        this.score = score;
         this.units = units;
     }
 
     public String getRange() {
         return units.getRange();
+    }
+
+    public double getScore() {
+        return score;
     }
 }

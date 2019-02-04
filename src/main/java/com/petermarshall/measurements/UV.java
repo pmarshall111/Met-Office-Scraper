@@ -1,23 +1,28 @@
-package measurements;
+package com.petermarshall.measurements;
 
-public enum UV {
-    LOW("You can safely stay outside",                    new int[]{0,1,2},  new int[]{}),
-    MODERATE("Take care during midday hours",             new int[]{3,4,5},  new int[]{}),
-    HIGH("Seek shade during midday hours",                new int[]{6,7},    new int[]{11,15}),
-    VERY_HIGH("Spend time in the shade between 11 and 3", new int[]{8,9,10}, new int[]{11,15}),
-    EXTREME("Avoid being outside during midday hours",    new int[]{11},     new int[]{11,15});
+import com.petermarshall.measurements.info.UvInfo;
 
-    final String message;
-    private final int[] uvIndexes;
-    private final int[] avoidBeingOutsideBetween;
+import java.time.LocalTime;
+import java.util.HashSet;
 
-    UV(String message, int[] uvIndexes, int[] avoidBeingOutsideBetween) {
-        this.message = message;
-        this.uvIndexes = uvIndexes;
-        this.avoidBeingOutsideBetween = avoidBeingOutsideBetween;
+public class UV {
+    private int uvScore;
+    private UvInfo uvInfo;
+
+    public UV(int uvScore, UvInfo uvInfo) {
+        this.uvScore = uvScore;
+        this.uvInfo = uvInfo;
     }
 
-//    public static UV getUvFromIndex(int index) {
-//
-//    }
+    public int getUvScore() {
+        return uvScore;
+    }
+
+    public HashSet<LocalTime> getTimesToStayOutTheSun() {
+        return uvInfo.getTimesOfDayNotToGoOutside();
+    }
+
+    public String getRecommendation() {
+        return uvInfo.getRecommendation();
+    }
 }

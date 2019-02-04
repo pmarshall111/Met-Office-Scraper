@@ -20,11 +20,6 @@ public class MetOfficeScraper {
         createWeatherData();
     }
 
-    public static void main(String[] args) {
-        MetOfficeScraper mo = new MetOfficeScraper(Locations.CHALFONT_ST_PETER);
-        HtmlPage p = mo.getPage();
-    }
-
     private void setupPage() {
         try (WebClient webClient = new WebClient()) {
             String url = MetOfficeUrl.getUrl(this.locationHash);
