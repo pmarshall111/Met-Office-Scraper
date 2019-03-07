@@ -2,12 +2,12 @@ package com.petermarshall.measurements.info;
 
 public enum VisibilityInfo {
     UNKNOWN("u", new int[]{-1,-1}),
-    VERY_POOR("vp", new int[]{0,1}),
-    POOR("p", new int[]{1,4}),
-    MODERATE("m", new int[]{4,10}),
-    GOOD("g", new int[]{10,20}),
-    VERY_GOOD("vg", new int[]{20,40}),
-    EXCELLENT("e", new int[]{40,-1});
+    VERY_POOR("vp", new int[]{0,1}),//score of <40
+    POOR("p", new int[]{1,4}), //score of 40-50
+    MODERATE("m", new int[]{4,10}), //score of 50-60
+    GOOD("g", new int[]{10,20}), //score of 60-70
+    VERY_GOOD("vg", new int[]{20,40}), //score of 70-80
+    EXCELLENT("e", new int[]{40,-1}); //score of 80+
     
     final String symbol;
     private final int[] rangeBoundariesInKm;

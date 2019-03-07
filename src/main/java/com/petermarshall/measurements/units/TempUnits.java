@@ -46,4 +46,10 @@ public enum TempUnits {
     private static double fahrenheitToCelsius(double fahrenheit) {
         return (5d/9d) * (fahrenheit-32);
     }
+
+    public String getCapitalisedName() {
+        String firstCharUpper = name().toUpperCase().substring(0,1);
+        String restLower = name().toLowerCase().substring(1);
+        return firstCharUpper + restLower;
+    }
 }

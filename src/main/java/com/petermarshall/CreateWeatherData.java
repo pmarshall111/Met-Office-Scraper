@@ -19,6 +19,7 @@ import java.util.ArrayList;
 public class CreateWeatherData {
     private static DailyWeather[] futureWeather;
     private static DomElement currentDaysData;
+    private static DomNode currentDaysHighlights;
     private static DailyWeather currentDaysWeather;
     private static ArrayList<HourlyWeather> currentDaysHourlyData;
 
@@ -26,34 +27,35 @@ public class CreateWeatherData {
     }
 
     public static DailyWeather[] fromPage(HtmlPage page) {
-        String baseId = "divDayModule";
+        String baseId = "day";
         futureWeather = new DailyWeather[MetOfficeScraper.numbDaysOfWeather];
+        DomNodeList<DomNode> daysHighlightsData = page.querySelectorAll("#highlightsContainer > div");
 
         for (int i = 0; i<MetOfficeScraper.numbDaysOfWeather; i++) {
-            DomElement dayData = page.getElementById(baseId + i);
+            DomElement dayInDepthData = page.getElementById(baseId + i);
 
-            setFieldsToCurrentDay(dayData, i);
+            setFieldsToCurrentDay(dayInDepthData, daysHighlightsData, i);
             addHoursThatHaveData();
             addOutlook();
             addTemp();
             addFeelsLikeTemp();
             addChanceOfRainData();
-            addWindData();
+            addWindSpeedAndDirection();
+            addWindGust();
             addVisibilityData();
             addHumidityData();
             addUvData();
             addSunriseSunsetTimes();
             addAirPollutionData();
-            //todo: add chance of rain
         }
 
         return futureWeather;
     }
 
     private static void addChanceOfRainData() {
-        DomNodeList<DomNode> hourlyChanceOfRain = currentDaysData.querySelectorAll(".weatherRain td");
+        DomNodeList<DomNode> hourlyChanceOfRain = currentDaysData.querySelectorAll(".step-pop td");
         for (int idx = 0; idx<hourlyChanceOfRain.size(); idx++) {
-            String chanceString = hourlyChanceOfRain.get(idx).getTextContent();
+            String chanceString = hourlyChanceOfRain.get(idx).getTextContent().trim();
             double probability = convertPercentStringToProbability(chanceString);
 
             HourlyWeather weather = currentDaysHourlyData.get(idx);
@@ -62,14 +64,21 @@ public class CreateWeatherData {
     }
 
     private static LocalDate getTodaysDate(DomElement dayData) {
-        DomNode dateNode = dayData.querySelector(".weatherDate .print");
-        String dateWithParentheses = dateNode.getTextContent();
-        return getDateFromTitle(dateWithParentheses);
+        String yyyyMmDd = dayData.getAttribute("data-content-id");
+
+        String[] partsOfDate = yyyyMmDd.split("-");
+        int year = Integer.parseInt(partsOfDate[0]);
+        int month = Integer.parseInt(partsOfDate[1]);
+        int day = Integer.parseInt(partsOfDate[2]);
+
+        return LocalDate.of(year, month, day);
     }
 
-    private static void setFieldsToCurrentDay(DomElement dayData, int index) {
-        LocalDate date = getTodaysDate(dayData);
-        currentDaysData = dayData;
+    private static void setFieldsToCurrentDay(DomElement dayInDepthData, DomNodeList<DomNode> allDaysHighlights, int index) {
+        LocalDate date = getTodaysDate(dayInDepthData);
+        currentDaysData = dayInDepthData;
+        currentDaysHighlights = allDaysHighlights.get(index);
+
         currentDaysHourlyData = new ArrayList<>();
         currentDaysWeather = new DailyWeather(date, currentDaysHourlyData);
 
@@ -77,7 +86,7 @@ public class CreateWeatherData {
     }
 
     private static void addHoursThatHaveData() {
-        DomNodeList<DomNode> rowTimesInDay = currentDaysData.querySelectorAll(".weatherTime td");
+        DomNodeList<DomNode> rowTimesInDay = currentDaysData.querySelectorAll(".step-time th");
         rowTimesInDay.forEach(timeRow -> {
             LocalTime time = getTimeFromHHMM(timeRow.getTextContent());
             HourlyWeather weather = new HourlyWeather(time);
@@ -86,7 +95,7 @@ public class CreateWeatherData {
     }
 
     private static void addOutlook() {
-        DomNodeList<DomNode> hourlyOutlook = currentDaysData.querySelectorAll(".weatherWX td");
+        DomNodeList<DomNode> hourlyOutlook = currentDaysData.querySelectorAll(".step-symbol img");
         for (int idx = 0; idx<hourlyOutlook.size(); idx++) {
             String outlook = hourlyOutlook.get(idx).getAttributes().getNamedItem("title").getTextContent();
             Conditions condition = Conditions.getCondition(outlook);
@@ -97,14 +106,12 @@ public class CreateWeatherData {
     }
 
     private static void addTemp() {
-        DomNodeList<DomNode> hourlyTemp = currentDaysData.querySelectorAll(".weatherTemp i");
+        DomNodeList<DomNode> hourlyTemp = currentDaysData.querySelectorAll(".step-temp div");
         for (int idx = 0; idx<hourlyTemp.size(); idx++) {
             NamedNodeMap attributes = hourlyTemp.get(idx).getAttributes();
-            String temp = attributes.getNamedItem("data-value-raw").getTextContent();
-            String unit = attributes.getNamedItem("data-unit").getTextContent();
+            String temp = attributes.getNamedItem("data-value").getTextContent();
             double tempVal = Double.parseDouble(temp);
-            TempUnits tempUnit = TempUnits.getTempUnit(unit);
-            Temperature temperature = new Temperature(tempVal, tempUnit);
+            Temperature temperature = new Temperature(tempVal, TempUnits.CELSIUS);
 
             HourlyWeather weather = currentDaysHourlyData.get(idx);
             weather.setTemp(temperature);
@@ -112,59 +119,62 @@ public class CreateWeatherData {
     }
 
     private static void addFeelsLikeTemp() {
-        DomNodeList<DomNode> hourlyFeelsLikeTemp = currentDaysData.querySelectorAll(".weatherFeel td");
+        DomNodeList<DomNode> hourlyFeelsLikeTemp = currentDaysData.querySelectorAll(".step-feels-like span");
         for (int idx = 0; idx<hourlyFeelsLikeTemp.size(); idx++) {
             NamedNodeMap attributes = hourlyFeelsLikeTemp.get(idx).getAttributes();
-            String temp = attributes.getNamedItem("data-value-raw").getTextContent();
-            String unit = attributes.getNamedItem("data-unit").getTextContent();
+            String temp = attributes.getNamedItem("data-value").getTextContent();
             double tempVal = Double.parseDouble(temp);
-            TempUnits tempUnit = TempUnits.getTempUnit(unit);
-            Temperature feelsLikeTemp = new Temperature(tempVal, tempUnit);
+            Temperature feelsLikeTemp = new Temperature(tempVal, TempUnits.CELSIUS);
 
             HourlyWeather weather = currentDaysHourlyData.get(idx);
             weather.setFeelsLikeTemp(feelsLikeTemp);
         }
     }
 
-    private static void addWindData() {
-        DomNodeList<DomNode> hourlyWind = currentDaysData.querySelectorAll(".weatherWind td");
+    private static void addWindSpeedAndDirection() {
+        DomNodeList<DomNode> hourlyWind = currentDaysData.querySelectorAll(".step-wind td");
         for (int idx = 0; idx<hourlyWind.size(); idx++) {
             DomNode currHourWind = hourlyWind.get(idx);
 
             DomNode directionNode = currHourWind.querySelector(".direction");
-            DomNode speedNode = currHourWind.querySelector(".icon");
-            DomNode gustNode = currHourWind.querySelector(".gust");
+            String direction = directionNode.getAttributes().getNamedItem("data-value").getNodeValue();
 
-            Wind wind = new Wind();
-            wind.setDirection(directionNode.getTextContent());
-            wind.setSpeed( getRawVal(speedNode), getVelUnits(speedNode) );
-            wind.setGust( getRawVal(gustNode), getVelUnits(gustNode) );
+            DomNode speedNode = currHourWind.querySelector(".speed");
+            String speedStr = speedNode.getAttributes().getNamedItem("data-value").getNodeValue();
+            double speedInMetersPS = Double.parseDouble(speedStr);
+
+            WindSpeedDirection windSpeedDirection = new WindSpeedDirection();
+            windSpeedDirection.setDirection(direction);
+            windSpeedDirection.setSpeed(speedInMetersPS, VelocityUnits.MPS);
 
             HourlyWeather weather = currentDaysHourlyData.get(idx);
-            weather.setWind(wind);
+            weather.setWindSpeedDirection(windSpeedDirection);
         }
     }
 
-    private static VelocityUnits getVelUnits(DomNode node) {
-        NamedNodeMap attributes = node.getAttributes();
-        String unit = attributes.getNamedItem("data-unit").getTextContent();
-        return VelocityUnits.getVelocityUnit(unit);
-    }
+    private static void addWindGust() {
+        DomNodeList<DomNode> hourlyWindGust = currentDaysData.querySelectorAll(".step-wind-gust span");
+        for (int idx = 0; idx<hourlyWindGust.size(); idx++) {
+            DomNode gustNode = hourlyWindGust.get(idx);
+            String gustStr = gustNode.getAttributes().getNamedItem("data-value").getNodeValue();
+            double gustInMetersPS = Double.parseDouble(gustStr);
 
-    private static double getRawVal(DomNode node) {
-        NamedNodeMap attributes = node.getAttributes();
-        String windStr = attributes.getNamedItem("data-value-raw").getTextContent();
-        return Double.parseDouble(windStr);
+            WindGust windGust = new WindGust();
+            windGust.setGust(gustInMetersPS, VelocityUnits.MPS);
+
+            HourlyWeather weather = currentDaysHourlyData.get(idx);
+            weather.setWindGust(windGust);
+        }
     }
 
     private static void addVisibilityData() {
-        DomNodeList<DomNode> hourlyVisibility = currentDaysData.querySelectorAll(".weatherVisibility td");
+        DomNodeList<DomNode> hourlyVisibility = currentDaysData.querySelectorAll(".step-visibility span");
         for (int idx = 0; idx<hourlyVisibility.size(); idx++) {
-            String visSymbol = hourlyVisibility.get(idx).getTextContent();
+            String visSymbol = hourlyVisibility.get(idx).getNodeValue();
             VisibilityInfo visUnits = VisibilityInfo.getVisibilityUnit(visSymbol);
 
             NamedNodeMap attributes = hourlyVisibility.get(idx).getAttributes();
-            String visibilityStr = attributes.getNamedItem("data-value-raw").getTextContent();
+            String visibilityStr = attributes.getNamedItem("data-value").getNodeValue();
             double vis = Double.parseDouble(visibilityStr) / 100;
 
             Visibility visibility = new Visibility(vis, visUnits);
@@ -174,13 +184,13 @@ public class CreateWeatherData {
     }
 
     private static void addHumidityData() {
-        DomNodeList<DomNode> hourlyHumidity = currentDaysData.querySelectorAll(".weatherHumidity td");
+        DomNodeList<DomNode> hourlyHumidity = currentDaysData.querySelectorAll(".step-humidity span");
         for (int idx = 0; idx<hourlyHumidity.size(); idx++) {
-            String percent = hourlyHumidity.get(idx).getTextContent();
-            double probability = convertPercentStringToProbability(percent);
+            String percent = hourlyHumidity.get(idx).getAttributes().getNamedItem("data-value").getNodeValue();
+            double humidity = Double.parseDouble(percent) / 100;
 
             HourlyWeather weather = currentDaysHourlyData.get(idx);
-            weather.setHumidity(probability);
+            weather.setHumidity(humidity);
         }
     }
 
@@ -192,13 +202,11 @@ public class CreateWeatherData {
     }
 
     private static void addUvData() {
-        DomNodeList<DomNode> hourlyUV  = currentDaysData.querySelectorAll(".weatherUV i");
+        DomNodeList<DomNode> hourlyUV  = currentDaysData.querySelectorAll(".step-uv td");
         for (int idx = 0; idx<hourlyUV.size(); idx++) {
-            String scoreStr = hourlyUV.get(idx).getTextContent().trim();
-            if (scoreStr.length() == 0) {
-                scoreStr = "0";
-            }
+            String scoreStr = hourlyUV.get(idx).getAttributes().getNamedItem("data-value").getNodeValue();
             int score = Integer.parseInt(scoreStr);
+
             UvInfo uvInfo = UvInfo.getUvFromIndex(score);
             UV uv = new UV(score, uvInfo);
 
@@ -208,41 +216,29 @@ public class CreateWeatherData {
     }
 
     private static void addSunriseSunsetTimes() {
-        DomNodeList<DomNode> dayInfo = currentDaysData.querySelectorAll(".sunInner span");
-        for (int idx = 0; idx<dayInfo.size(); idx++) {
-            String text = dayInfo.get(idx).getTextContent().trim();
-            if (text.toLowerCase().contains("sunset")) {
-                String hhmm = getTimeFromSunString(text);
-                currentDaysWeather.setSunset(getTimeFromHHMM(hhmm));
-            } else if (text.toLowerCase().contains("sunrise")) {
-                String hhmm = getTimeFromSunString(text);
-                currentDaysWeather.setSunrise(getTimeFromHHMM(hhmm));
-            }
-        }
+        String sunrise = currentDaysHighlights.querySelector(".sunrise time").getTextContent();
+        String sunset = currentDaysHighlights.querySelector(".sunset time").getTextContent();
+
+        currentDaysWeather.setSunrise(getTimeFromHHMM(sunrise));
+        currentDaysWeather.setSunset(getTimeFromHHMM(sunset));
     }
 
-    //format "Sunrise: 12:34"
-    private static String getTimeFromSunString(String sunString) {
-        return sunString.substring(sunString.length()-5);
-    }
 
     private static void addAirPollutionData() {
-        DomNodeList<DomNode> dayInfo = currentDaysData.querySelectorAll(".sunInner .icon");
-        for (int idx = 0; idx<dayInfo.size(); idx++) {
-            NamedNodeMap attributes = dayInfo.get(idx).getAttributes();
-            String dataType = attributes.getNamedItem("data-type").getTextContent();
-            if (dataType.equals("aq")) {
-                String pollString = attributes.getNamedItem("data-value").getTextContent();
-                int pollutionVal = Integer.parseInt(pollString);
-                AirPollutionInfo airPollutionInfo = AirPollutionInfo.getAirPollFromIndex(pollutionVal);
-                AirPollution airPollution = new AirPollution(pollutionVal, airPollutionInfo);
-
-                currentDaysWeather.setAirPollution(airPollution);
-            }
+        DomNode spanContainer = currentDaysHighlights.querySelector(".weather-item span[data-type=aq]");
+        try {
+            String pollutionStr = spanContainer.getAttributes().getNamedItem("data-value").getNodeValue();
+            int pollutionVal = Integer.parseInt(pollutionStr);
+            AirPollutionInfo airPollutionInfo = AirPollutionInfo.getAirPollFromIndex(pollutionVal);
+            AirPollution airPollution = new AirPollution(pollutionVal, airPollutionInfo);
+            currentDaysWeather.setAirPollution(airPollution);
+        } catch (NullPointerException e) {
+            //only first 5 days have pollution data
         }
     }
 
     private static LocalTime getTimeFromHHMM(String HHMM) {
+        HHMM = HHMM.trim();
 
         if (HHMM.toLowerCase().equals("now")) {
             LocalTime fullTime = LocalTime.now();
@@ -256,64 +252,4 @@ public class CreateWeatherData {
         }
     }
 
-    //input format is (Friday 1 February 2019)
-    private static LocalDate getDateFromTitle(String date) {
-        if (date.charAt(0) == '(' && date.charAt(date.length()-1) == ')') {
-            date = date.substring(1, date.length()-1);
-        }
-
-        String[] partsOfDate = date.split(" ");
-        int year = Integer.parseInt(partsOfDate[3]);
-        int month = getMonthNumb(partsOfDate[2]);
-        int day = Integer.parseInt(partsOfDate[1]);
-
-        return LocalDate.of(year, month, day);
-    }
-
-
-    private static int getMonthNumb(String monthString) {
-        int month;
-
-        switch(monthString) {
-            case "January":
-                month = 1;
-                break;
-            case "February":
-                month = 2;
-                break;
-            case "March":
-                month = 3;
-                break;
-            case "April":
-                month = 4;
-                break;
-            case "May":
-                month = 5;
-                break;
-            case "June":
-                month = 6;
-                break;
-            case "July":
-                month = 7;
-                break;
-            case "August":
-                month = 8;
-                break;
-            case "September":
-                month = 9;
-                break;
-            case "October":
-                month = 10;
-                break;
-            case "November":
-                month = 11;
-                break;
-            case "December":
-                month = 12;
-                break;
-            default:
-                throw new RuntimeException("Could not change date string for month into number");
-        }
-        return month;
-    }
 }

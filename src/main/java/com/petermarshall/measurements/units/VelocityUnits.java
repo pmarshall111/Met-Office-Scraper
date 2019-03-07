@@ -3,7 +3,8 @@ package com.petermarshall.measurements.units;
 public enum VelocityUnits {
     NO_UNIT("N/A"),
     MPH("mph"),
-    KPH("kph");
+    KPH("kph"),
+    MPS("mps");
 
     final String descriptor;
 
@@ -25,12 +26,23 @@ public enum VelocityUnits {
         if (current.equals(desired)) return val;
         else if (current.equals(VelocityUnits.MPH)) {
             if (desired.equals(VelocityUnits.KPH)) {
-                return milesToKm(val);
+                return mphToKmph(val);
+            } else if (desired.equals(VelocityUnits.MPS)) {
+                return mphToMps(val);
             }
         }
         else if (current.equals(VelocityUnits.KPH)) {
             if (desired.equals(VelocityUnits.MPH)) {
-                return kmToMiles(val);
+                return kmphToMph(val);
+            } else if (desired.equals(VelocityUnits.MPS)) {
+                return kmphToMps(val);
+            }
+        }
+        else if (current.equals(VelocityUnits.MPS)) {
+            if (desired.equals(VelocityUnits.KPH)) {
+                return mpsToKmph(val);
+            } else if (desired.equals(VelocityUnits.MPH)) {
+                return mpsToMph(val);
             }
         }
 
@@ -41,11 +53,29 @@ public enum VelocityUnits {
         System.out.println(convert(5, VelocityUnits.MPH, VelocityUnits.KPH));
     }
 
-    private static double milesToKm(double miles) {
+    private static double mphToKmph(double miles) {
         return miles * 1.609;
     }
 
-    private static double kmToMiles(double km) {
-        return km / 1.609;
+    private static double kmphToMph(double kmph) {
+        return kmph / 1.609;
+    }
+
+    private static double mpsToKmph(double mps) {
+        return mps * 3.6;
+    }
+
+    private static double kmphToMps(double kmph) {
+        return kmph / 3.6;
+    }
+
+    private static double mpsToMph(double mps) {
+        double kmph = mpsToKmph(mps);
+        return kmphToMph(kmph);
+    }
+
+    private static double mphToMps(double mph) {
+        double kmph = mphToMps(mph);
+        return kmphToMps(kmph);
     }
 }

@@ -1,19 +1,20 @@
 package setterAccess;
 
-import com.petermarshall.measurements.Wind;
+import com.petermarshall.measurements.WindGust;
+import com.petermarshall.measurements.WindSpeedDirection;
 import com.petermarshall.measurements.units.VelocityUnits;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class testWindSetterAccessNotAllowed {
+public class testWindSpeedDirectionSetterAccessNotAllowed {
     @Test
     public void testGustSetter() {
         double kph = 60;
         double mph = 37.28;
         try {
-            Wind wind = new Wind();
-            wind.setGust(kph, VelocityUnits.KPH);
-            double gustInMph = wind.getGust(VelocityUnits.MPH);
+            WindGust windGust = new WindGust();
+            windGust.setGust(kph, VelocityUnits.KPH);
+            double gustInMph = windGust.getGust(VelocityUnits.MPH);
             Assert.fail("Should not have been able to set the gust from outside CreateWeatherData class.");
         } catch (NullPointerException e) {
             //
@@ -25,9 +26,9 @@ public class testWindSetterAccessNotAllowed {
         double kph = 60;
         double mph = 37.28;
         try {
-            Wind wind = new Wind();
-            wind.setSpeed(kph, VelocityUnits.KPH);
-            double speedInMph = wind.getSpeed(VelocityUnits.MPH);
+            WindSpeedDirection windSpeedDirection = new WindSpeedDirection();
+            windSpeedDirection.setSpeed(kph, VelocityUnits.KPH);
+            double speedInMph = windSpeedDirection.getSpeed(VelocityUnits.MPH);
             Assert.fail("Should not have been able to set the speed from outside CreateWeatherData class.");
         } catch (NullPointerException e) {
             //
@@ -38,30 +39,30 @@ public class testWindSetterAccessNotAllowed {
     public void testDirectionSetter() {
         String direction = "NW";
 
-        Wind wind = new Wind();
-        wind.setDirection(direction);
-        String result = wind.getDirection();
+        WindSpeedDirection windSpeedDirection = new WindSpeedDirection();
+        windSpeedDirection.setDirection(direction);
+        String result = windSpeedDirection.getDirection();
         Assert.assertNull("Should not be able to set direction from outside CreateWeatherDara class.", result);
     }
 
     @Test
     public void testDirectionSetterBoolean() {
-        Wind wind = new Wind();
-        boolean result = wind.setDirection("NW");
+        WindSpeedDirection windSpeedDirection = new WindSpeedDirection();
+        boolean result = windSpeedDirection.setDirection("NW");
         Assert.assertTrue("Method should return false to tell us we did not update the setter", !result);
     }
 
     @Test
     public void testGustSetterBoolean() {
-        Wind wind = new Wind();
-        boolean result = wind.setGust(3.2, VelocityUnits.MPH);
+        WindGust windGust = new WindGust();
+        boolean result = windGust.setGust(3.2, VelocityUnits.MPH);
         Assert.assertTrue("Method should return false to tell us we did not update the setter", !result);
     }
 
     @Test
     public void testSpeedSetterBoolean() {
-        Wind wind = new Wind();
-        boolean result = wind.setSpeed(1.5, VelocityUnits.MPH);
+        WindSpeedDirection windSpeedDirection = new WindSpeedDirection();
+        boolean result = windSpeedDirection.setSpeed(1.5, VelocityUnits.MPH);
         Assert.assertTrue("Method should return false to tell us we did not update the setter", !result);
     }
 }

@@ -12,9 +12,9 @@ public class HourlyWeather {
     //overall outlook
     //temperature
     //feels like temp
-    //wind speed
+    //windSpeedDirection speed
     //gust
-    //wind direction
+    //windSpeedDirection direction
     //visibility
     //humidity
     //uv index
@@ -29,7 +29,8 @@ public class HourlyWeather {
     private double chanceOfRain;
     private Temperature temp;
     private Temperature feelsLikeTemp;
-    private Wind wind;
+    private WindSpeedDirection windSpeedDirection;
+    private WindGust windGust;
     private Visibility visibility;
     private double humidity;
     private UV uv;
@@ -54,8 +55,12 @@ public class HourlyWeather {
         this.feelsLikeTemp = feelsLikeTemp;
     }
 
-    void setWind(Wind wind) {
-        this.wind = wind;
+    void setWindSpeedDirection(WindSpeedDirection windSpeedDirection) {
+        this.windSpeedDirection = windSpeedDirection;
+    }
+
+    public void setWindGust(WindGust windGust) {
+        this.windGust = windGust;
     }
 
     void setVisibility(Visibility visibility) {
@@ -89,15 +94,15 @@ public class HourlyWeather {
     }
 
     public String getWindDirection() {
-        return wind.getDirection();
+        return windSpeedDirection.getDirection();
     }
 
     public double getWindSpeed(VelocityUnits units) {
-        return wind.getSpeed(units);
+        return windSpeedDirection.getSpeed(units);
     }
 
     public double getWindGust(VelocityUnits units) {
-        return wind.getGust(units);
+        return windGust.getGust(units);
     }
 
     public String getVisibilityRangeString() {return visibility.getRange();}

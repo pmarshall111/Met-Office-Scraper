@@ -127,37 +127,40 @@ public class testScraper {
 
     @Test
     public void testCanGetOverallOutlookToday() {
-        DailyWeather today = forecast[0];
-        Conditions mostCommonCond = today.getAvgConditionToday();
+        for (int i = 0; i<forecast.length; i++) {
+            DailyWeather today = forecast[i];
+            Conditions mostCommonCond = today.getAvgConditionToday();
 
-        ArrayList<HourlyWeather> daytimeHours = today.getDaytimeHours();
-        HashMap<Conditions, Integer> countOfConditions = new HashMap<>();
-        for (HourlyWeather w: daytimeHours) {
-            Conditions c = w.getOutlook();
-            countOfConditions.putIfAbsent(c, 0);
-            countOfConditions.put(c, countOfConditions.get(c) + 1);
-        }
-
-        HashSet<Conditions> commonCondition = new HashSet<>();
-        int maxVal = -1;
-        for (Map.Entry<Conditions, Integer> entry: countOfConditions.entrySet()) {
-            if (entry.getValue() == maxVal) {
-                commonCondition.add(entry.getKey());
-            } else if (entry.getValue() > maxVal) {
-                commonCondition.clear();
-                commonCondition.add(entry.getKey());
+            ArrayList<HourlyWeather> daytimeHours = today.getDaytimeHours();
+            HashMap<Conditions, Integer> countOfConditions = new HashMap<>();
+            for (HourlyWeather w : daytimeHours) {
+                Conditions c = w.getOutlook();
+                countOfConditions.putIfAbsent(c, 0);
+                countOfConditions.put(c, countOfConditions.get(c) + 1);
             }
-        }
 
-
-        boolean testPasses = daytimeHours.size() == 0 || commonCondition.contains(mostCommonCond);
-        if (!testPasses) {
-            System.out.println("We calculate outlook to be one of these: ");
-            for (Conditions c: commonCondition) {
-                System.out.println(c.descriptor);
+            HashSet<Conditions> commonCondition = new HashSet<>();
+            int maxVal = -1;
+            for (Map.Entry<Conditions, Integer> entry : countOfConditions.entrySet()) {
+                if (entry.getValue() == maxVal) {
+                    commonCondition.add(entry.getKey());
+                } else if (entry.getValue() > maxVal) {
+                    commonCondition.clear();
+                    commonCondition.add(entry.getKey());
+                    maxVal = entry.getValue();
+                }
             }
+
+
+            boolean testPasses = daytimeHours.size() == 0 || commonCondition.contains(mostCommonCond);
+            if (!testPasses) {
+                System.out.println("We calculate outlook to be one of these: ");
+                for (Conditions c : commonCondition) {
+                    System.out.println(c.descriptor);
+                }
+            }
+            Assert.assertTrue("Calculated as " + (mostCommonCond != null ? mostCommonCond.descriptor : "null"), testPasses);
         }
-        Assert.assertTrue("Calculated as " + mostCommonCond.descriptor, testPasses);
     }
 
 
@@ -269,21 +272,23 @@ public class testScraper {
 
     @Test
     public void testCanGetDaytimeHours() {
-        DailyWeather today = forecast[0];
+        for (int i = 0; i<forecast.length; i++) {
+            DailyWeather today = forecast[i];
 
-        ArrayList<HourlyWeather> daytimeHours = today.getDaytimeHours();
-        ArrayList<HourlyWeather> allHours = today.getHourlyWeather();
-        LocalTime sunrise = today.getSunrise();
-        LocalTime sunset = today.getSunset();
+            ArrayList<HourlyWeather> daytimeHours = today.getDaytimeHours();
+            ArrayList<HourlyWeather> allHours = today.getHourlyWeather();
+            LocalTime sunrise = today.getSunrise();
+            LocalTime sunset = today.getSunset();
 
-        allHours.forEach(hour -> {
-            LocalTime currTime = hour.getTime();
-            if (currTime.isAfter(sunrise) && currTime.isBefore(sunset)) {
-                Assert.assertTrue("hours inside of sunrise + set not in daytime hours: " + hour.getTime(), daytimeHours.contains(hour));
-            } else {
-                Assert.assertFalse("hours includes a time outside of sunrise + set: " + hour.getTime() , daytimeHours.contains(hour));
-            }
-        });
+            allHours.forEach(hour -> {
+                LocalTime currTime = hour.getTime();
+                if (currTime.isAfter(sunrise) && currTime.isBefore(sunset)) {
+                    Assert.assertTrue("hours inside of sunrise + set not in daytime hours: " + hour.getTime(), daytimeHours.contains(hour));
+                } else {
+                    Assert.assertFalse("hours includes a time outside of sunrise + set: " + hour.getTime(), daytimeHours.contains(hour));
+                }
+            });
+        }
     }
 
 
